@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chatbot Test</title>
+</head>
+<body>
+    <h1>Chatbot</h1>
+    <input id="question" placeholder="Type your question" />
+    <button onclick="ask()">Ask</button>
+    <div id="response"></div>
+    <script>
+        function ask() {
+            fetch('/chatbot', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({question: document.getElementById('question').value})
+            })
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('response').innerText = data.response || data.error;
+            });
+        }
+    </script>
+</body>
+</html>
