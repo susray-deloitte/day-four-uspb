@@ -1,24 +1,51 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Chatbot Test</title>
+    <title>Chatbot</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
     <h1>Chatbot</h1>
+    <div id="chat-history"></div>
     <input id="question" placeholder="Type your question" />
     <button onclick="ask()">Ask</button>
-    <div id="response"></div>
+    <button onclick="clearChat()">Clear Chat</button>
     <script>
+        let chatHistory = [];
+
+        function renderChat() {
+            const chatDiv = document.getElementById('chat-history');
+            chatDiv.innerHTML = '';
+            chatHistory.forEach(item => {
+                const msgDiv = document.createElement('div');
+                msgDiv.innerHTML = `<b class="${item.role}">${item.role === 'user' ? 'You' : 'Bot'}:</b> ${item.content}`;
+                chatDiv.appendChild(msgDiv);
+            });
+            chatDiv.scrollTop = chatDiv.scrollHeight;
+        }
+
         function ask() {
+            const questionInput = document.getElementById('question');
+            const question = questionInput.value.trim();
+            if (!question) return;
+            chatHistory.push({role: 'user', content: question});
+            renderChat();
+            questionInput.value = '';
             fetch('/chatbot', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({question: document.getElementById('question').value})
+                body: JSON.stringify({question: question})
             })
             .then(res => res.json())
             .then(data => {
-                document.getElementById('response').innerText = data.response || data.error;
+                chatHistory.push({role: 'bot', content: data.response || data.error});
+                renderChat();
             });
+        }
+
+        function clearChat() {
+            chatHistory = [];
+            renderChat();
         }
     </script>
 </body>

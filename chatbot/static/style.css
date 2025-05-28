@@ -1,0 +1,11 @@
+#chat-history {
+    border: 1px solid #ccc;
+    padding: 10px;
+    height: 300px;
+    width: 400px;
+    overflow-y: auto;
+    margin-bottom: 10px;
+    background: #fafafa;
+}
+.user { color: #0074d9; }
+.bot { color: #2ecc40; }
